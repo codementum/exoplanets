@@ -12,8 +12,6 @@ var r = 960,
 var earthToJupiter = 317.83;
 var jupiterToEarth = 0.00315;
 
-var bubbleSizeScale = 1.0;
-
 var ourPlanets = [
 {name:'mercury', eRadius:'0.3829'},
 {name:'venus', eRadius:'0.9499'},
@@ -46,6 +44,7 @@ function cFill(val){
 
 var bubble = d3.layout.pack()
     .sort(null)
+    .value(function(d) { return d.radius * d.radius; })
     .size([r, r]);
 
 var vis = d3.select("#chart").append("svg")
@@ -163,7 +162,7 @@ var updateNodes = function() {
     .duration(1000)
     .style("fill", function(d) { 
       if(!colorByDistance)
-        return cFill(d.value); 
+        return cFill(d.radius); 
       else
         return dFill(d.distance);
     });
@@ -178,17 +177,17 @@ var updateNodes = function() {
         d3.select(this).style("fill", function(d) { return d3.hsl(dFill(d.distance)).darker(); });
     } else {
         d3.select("#planet").text(d.className);
-        d3.select("#earths").text("("+format(d.value)+" *  earth-radius)");
+        d3.select("#earths").text("("+format(d.radius)+" *  earth-radius)");
         d3.select("#year").text("year discovered: "+d.year);
         d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
-        d3.select(this).style("fill", function(d) { return cFill(d.value).brighter(); });
+        d3.select(this).style("fill", function(d) { return cFill(d.radius).brighter(); });
     }
     })
     .on("mouseout", function(d) {
       if(colorByDistance){
         d3.select(this).style("fill", function(d) { return d3.hsl(dFill(d.distance)); });
       } else {
-          d3.select(this).style("fill", function(d) { return cFill(d.value); });
+          d3.select(this).style("fill", function(d) { return cFill(d.radius); });
       }
     });
 }
@@ -204,7 +203,7 @@ vis.selectAll('circle.ourPlanets')
   .attr('cx', function(d, i) { return r - 70; })
   .attr('cy', function(d, i) { return 80 + 25*i; })
   .attr('r', function(d, i) { 
-    return d.eRadius*bubbleSizeScale; 
+    return d.eRadius; 
   })
   .style('fill', function(d, i) { 
       return cFill(d.eRadius); 
@@ -251,20 +250,20 @@ d3.json("exoplanets2.json", function(json) {
       .attr("transform", function(d) { return "translate(" + d.x + "," + (80 + d.y) + ")"; });
 
   node.append("title")
-      .text(function(d) { return d.className + "\n * Earth Radius: " + d.value + "\n AU (distance to star): " + d.distance; });
+      .text(function(d) { return d.className + "\n * Earth Radius: " + d.radius + "\n AU (distance to star): " + d.distance; });
 
   node.append("circle")
-      .attr("r", function(d) { return d.r; })
-      .style("fill", function(d) { return cFill(d.value); })
+      .attr("r", function(d) {  return d.r; })
+      .style("fill", function(d) { return cFill(d.radius); })
       .on("mouseover", function(d) {
         d3.select("#planet").text(d.className);
-        d3.select("#earths").text("("+format(d.value)+" * earth radius)");
+        d3.select("#earths").text("("+format(d.radius)+" * earth radius)");
         d3.select("#year").text("year discovered: "+d.year);
         d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
-        d3.select(this).style("fill", function(d) { return cFill(d.value).brighter(); });
+        d3.select(this).style("fill", function(d) { return cFill(d.radius).brighter(); });
       })
       .on("mouseout", function(d) {
-        d3.select(this).style("fill", function(d) { return cFill(d.value); });
+        d3.select(this).style("fill", function(d) { return cFill(d.radius); });
       });
 
       // names on circles
@@ -281,7 +280,7 @@ function classes(root) {
 
   function recurse(name, node) {
     if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
-    else classes.push({packageName: name, className: node.P_Name, value: node.P_Radius__EU, distance: node.P_Mean_Distance__AU, year: node.P_Disc_Year, atmosphere: node.P_Atmosphere_Class});
+    else classes.push({packageName: name, className: node.P_Name, radius: node.P_Radius__EU, distance: node.P_Mean_Distance__AU, year: node.P_Disc_Year, atmosphere: node.P_Atmosphere_Class});
   }
 
   recurse(null, root);
