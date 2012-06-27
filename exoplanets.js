@@ -193,7 +193,6 @@ var updateNodes = function() {
 }
 
 
-
 // other planets
 vis.selectAll('circle.ourPlanets')
   .data(ourPlanets)
@@ -227,20 +226,26 @@ vis.selectAll('text.ourPlanets')
   .attr('y', function(d, i) { return 80 + 26*i; })
   .style("font-size", "12px")
   .text(function(d) { return d.name; })
-  .on('mouseover', function(d, i){
+  .on("mouseover", function(d) {
+    d3.select("#planet").text(d.name);
+    d3.select("#earths").text("("+format(d.eRadius)+" * earth radius)");
+    d3.select("#year").text("");
+    d3.select("#atmosphere").text("");
+    d3.select('#'+d.name).style("fill", function(d) { return cFill(d.eRadius).brighter(); });
+
     if(d.name === 'pluto'){
       d3.select(this).text("jk!");
       d3.selectAll('circle.ourPlanets').select(d.name).style('fill', 'white');
     }
   })
-  .on('mouseout', function(d, i){
+  .on("mouseout", function(d) {
+    d3.select('#'+d.name).style("fill", function(d) { return cFill(d.eRadius); });
     if(d.name === 'pluto'){
       d3.select(this).text(d.name);
       d3.selectAll('circle.ourPlanets').select(d.name).style('fill', cFill(d.eRadius));
     }
   });
-
-
+ 
 d3.json("exoplanets2.json", function(json) {
   var node = vis.selectAll("g.node")
       .data(bubble.nodes(classes(json))
