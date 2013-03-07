@@ -5,7 +5,7 @@
 <style>
 </style>
 
-<script src="http://d3js.org/d3.v2.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://code.jquery.com/jquery-1.7.2.js"></script>
 <script src="lib/konami.pack.js"></script>
 
@@ -24,11 +24,17 @@
 </script>
 
 <h1>Exoplanets: an interactive version of XKCD 1071</h1>
+
 <p>An interactive version of <a href="http://xkcd.com/1071/">XKCD 1071: Exoplanets</a> using data from <a href="http://phl.upr.edu/projects/habitable-exoplanets-catalog/data/database">Planetary Habilitability Laboratory</a> (via <a href="http://twitter.com/ProfAbelMendez">@ProfAbelMendez</a>) and adapted code from <a href="http://mbostock.github.com/d3/ex/bubble.html"> the d3.js Bubble Chart example</a> (by <a href="http://twitter.com/mbostock">@mbostock</a>).</p>
+
 <p>Planets are drawn to scale using radius data. The dataset also includes attributes such as atmosphere type, which is included in the information area on the left.</p>
+
 <p><strong>The dataset is large (about 1.1mb), so it may take a few seconds to load.</strong></p>
+
 <p>All blue and light brown planets are smaller than Jupiter. Brown represents the planets larger than Jupiter, while red represents the largest of them all. For the color by distance option, the more blue a planet is, the further away it is from the nearest star.</p>
+
 <p>Code can be found on <a href="https://github.com/codementum/exoplanets"> github</a>, and I can be found at <a href="http://twitter.com/laneharrison">@laneharrison</a>.</p>
+
 <p>Special thanks to Drew (<a href="http://twitter.com/SeeingStructure">@SeeingStructure</a>) for help with the design details.</p>
 
 <script>
@@ -39,63 +45,57 @@
 // max: 24.5, min: 0.003
 // 0.0-4.0: blue; 4.0-8.0: lightbrown; 8.0-18.0: brown; 18.0-23.5: red
 
-var r = 960,
-    format = d3.format(".2f");
+var r = 960
+  , format = d3.format(".2f");
 
 // http://en.wikipedia.org/wiki/Jupiter_mass
-var earthToJupiter = 317.83;
-var jupiterToEarth = 0.00315;
+var earthToJupiter = 317.83
+  , jupiterToEarth = 0.00315;
 
 var ourPlanets = [
-{name:'mercury', radius:'0.3829'},
-{name:'venus', radius:'0.9499'},
-{name:'earth', radius:'1.0'},
-{name:'mars', radius:'0.533'},
-{name:'jupiter', radius:'11.209'},
-{name:'saturn', radius:'9.4492'},
-{name:'uranus', radius:'4.007'},
-{name:'neptune', radius:'3.883'},
-{name:'pluto', radius:'0.18'},
+  {name:'mercury', radius:'0.3829'},
+  {name:'venus', radius:'0.9499'},
+  {name:'earth', radius:'1.0'},
+  {name:'mars', radius:'0.533'},
+  {name:'jupiter', radius:'11.209'},
+  {name:'saturn', radius:'9.4492'},
+  {name:'uranus', radius:'4.007'},
+  {name:'neptune', radius:'3.883'},
+  {name:'pluto', radius:'0.18'},
 ];
 
 
-// can't figure out how to specify ranges in scales
-  var dFill = d3.scale.linear()
-        .domain([0.0004, 2500])
-        .range([d3.hsl('#DCDCDC'), d3.hsl('#156b87')]);
+var dFill = d3.scale.linear()
+    .domain([0.0004, 2500])
+    .range([d3.hsl('#DCDCDC'), d3.hsl('#156b87')]);
 
 // making a custom scale
 function cFill(d){
-  // TODO earth sized so too small to see!
   if(d.name === 'alf Cen B b')
     return d3.hsl('#E0E35D');
 
-  // year check
-//  if(d.year === '2012')
-//    return d3.hsl('#496B28');
-
   var val = d.radius;
   if(val >= 0.0 && val < 4.02)
-    return d3.hsl('#156b87'); // 195 84 53
+    return d3.hsl('#156b87');
   if(val >= 4.02 && val < 11.210)
-    return d3.hsl('#876315'); // 41 84 53
+    return d3.hsl('#876315'); 
   if(val >= 11.210 && val < 16.0)
-    return d3.hsl('#543510'); // 33 81 33 
+    return d3.hsl('#543510'); 
   else
-    return d3.hsl('#872815'); // 10 84 53
+    return d3.hsl('#872815'); 
 }
 
 var bubble = d3.layout.pack()
-    .sort(null)
-    .value(function(d) { return d.radius * d.radius; })
-    .size([r, r]);
+  .sort(null)
+  .value(function(d) { return d.radius * d.radius; })
+  .size([r, r]);
 
 var vis = d3.select("body").append("svg")
-    .attr("width", r)
-    .attr("height", r+100)
-    .attr("class", "bubble");
+  .attr("width", r)
+  .attr("height", r+100)
+  .attr("class", "bubble");
 
-//cb test
+//colorblindness
 vis.append("text")
   .attr("id", "colorBlind")
   .attr("x", r/2)
@@ -104,7 +104,6 @@ vis.append("text")
   .style("font-size", "750px")
   .style("text-anchor", "middle")
   .text("42");
-
 
 // planet title
 vis.append("text")
@@ -150,8 +149,9 @@ vis.append("text")
 
 
 var colorByDistance = false;
-function toggleMetric(){ 
-  if(!colorByDistance){
+
+function toggleMetric() { 
+  if(!colorByDistance) {
     colorByDistance = true;
     d3.select('#distanceButton').style('fill', cFill(0.5));
     d3.select('#massButton').style('fill', 'white');
@@ -163,6 +163,9 @@ function toggleMetric(){
     updateNodes();
   }
 }
+
+
+
 
 // earth mass info
 vis.append("rect")
@@ -201,6 +204,7 @@ vis.append("text")
 
 var updateNodes = function() {
   var circs = vis.selectAll("g.node").selectAll('circle');
+
   circs.transition()
     .duration(1000)
     .style("fill", function(d) { 
@@ -210,29 +214,29 @@ var updateNodes = function() {
         return dFill(d.distance);
     });
 
-  circs
-    .on("mouseover", function(d) {
-      if(colorByDistance){
-        d3.select("#planet").text(d.className);
-        d3.select("#earths").text("("+format(d.distance)+" * earth-to-sun distance)");
-        d3.select("#year").text("year discovered: "+d.year);
-        d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
-        d3.select(this).style("fill", function(d) { return d3.hsl(dFill(d.distance)).darker(); });
+  circs.on("mouseover", function(d) {
+    if(colorByDistance) {
+      d3.select("#planet").text(d.className);
+      d3.select("#earths").text("("+format(d.distance)+" * earth-to-sun distance)");
+      d3.select("#year").text("year discovered: "+d.year);
+      d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
+      d3.select(this).style("fill", function(d) { return d3.hsl(dFill(d.distance)).darker(); });
     } else {
-        d3.select("#planet").text(d.className);
-        d3.select("#earths").text("("+format(d.radius)+" *  earth-radius)");
-        d3.select("#year").text("year discovered: "+d.year);
-        d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
-        d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
+      d3.select("#planet").text(d.className);
+      d3.select("#earths").text("("+format(d.radius)+" *  earth-radius)");
+      d3.select("#year").text("year discovered: "+d.year);
+      d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
+      d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
     }
-    })
-    .on("mouseout", function(d) {
-      if(colorByDistance){
-        d3.select(this).style("fill", function(d) { return d3.hsl(dFill(d.distance)); });
-      } else {
-          d3.select(this).style("fill", function(d) { return cFill(d); });
-      }
-    });
+  });
+
+  circs.on("mouseout", function(d) {
+    if(colorByDistance) {
+      d3.select(this).style("fill", function(d) { return d3.hsl(dFill(d.distance)); });
+    } else {
+      d3.select(this).style("fill", function(d) { return cFill(d); });
+    }
+  });
 }
 
 
@@ -240,54 +244,54 @@ var updateNodes = function() {
 vis.selectAll('circle.ourPlanets')
   .data(ourPlanets)
   .enter().append('circle')
-  .attr('class', 'ourPlanets')
-  .attr('id', function(d) { return d.name; })
-  .attr('cx', function(d, i) { return r - 70; })
-  .attr('cy', function(d, i) { return 80 + 25*i; })
-  .attr('r', function(d, i) { 
-    return d.radius; 
-  })
-  .style('fill', function(d, i) { 
-      return cFill(d); 
-  })
-  .on("mouseover", function(d) {
-    d3.select("#planet").text(d.name);
-    d3.select("#earths").text("("+format(d.radius)+" * earth radius)");
-    d3.select("#year").text("");
-    d3.select("#atmosphere").text("");
-    d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
-  })
-  .on("mouseout", function(d) {
-    d3.select(this).style("fill", function(d) { return cFill(d); });
-  });
+    .attr('class', 'ourPlanets')
+    .attr('id', function(d) { return d.name; })
+    .attr('cx', function(d, i) { return r - 70; })
+    .attr('cy', function(d, i) { return 80 + 25*i; })
+    .attr('r', function(d, i) { 
+      return d.radius; 
+    })
+    .style('fill', function(d, i) { 
+        return cFill(d); 
+    })
+    .on("mouseover", function(d) {
+      d3.select("#planet").text(d.name);
+      d3.select("#earths").text("("+format(d.radius)+" * earth radius)");
+      d3.select("#year").text("");
+      d3.select("#atmosphere").text("");
+      d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
+    })
+    .on("mouseout", function(d) {
+      d3.select(this).style("fill", function(d) { return cFill(d); });
+    });
   
 vis.selectAll('text.ourPlanets')
   .data(ourPlanets)
   .enter().append('text')
-  .attr('class', 'ourPlanets')
-  .attr('x', function(d, i) { return r - 50; })
-  .attr('y', function(d, i) { return 80 + 26*i; })
-  .style("font-size", "12px")
-  .text(function(d) { return d.name; })
-  .on("mouseover", function(d) {
-    d3.select("#planet").text(d.name);
-    d3.select("#earths").text("("+format(d.radius)+" * earth radius)");
-    d3.select("#year").text("");
-    d3.select("#atmosphere").text("");
-    d3.select('#'+d.name).style("fill", function(d) { return cFill(d).brighter(); });
+    .attr('class', 'ourPlanets')
+    .attr('x', function(d, i) { return r - 50; })
+    .attr('y', function(d, i) { return 80 + 26*i; })
+    .style("font-size", "12px")
+    .text(function(d) { return d.name; })
+    .on("mouseover", function(d) {
+      d3.select("#planet").text(d.name);
+      d3.select("#earths").text("("+format(d.radius)+" * earth radius)");
+      d3.select("#year").text("");
+      d3.select("#atmosphere").text("");
+      d3.select('#'+d.name).style("fill", function(d) { return cFill(d).brighter(); });
 
-    if(d.name === 'pluto'){
-      d3.select(this).text("jk!");
-      d3.selectAll('circle.ourPlanets').select(d.name).style('fill', 'white');
-    }
-  })
-  .on("mouseout", function(d) {
-    d3.select('#'+d.name).style("fill", function(d) { return cFill(d); });
-    if(d.name === 'pluto'){
-      d3.select(this).text(d.name);
-      d3.selectAll('circle.ourPlanets').select(d.name).style('fill', cFill(d));
-    }
-  });
+      if(d.name === 'pluto'){
+        d3.select(this).text("jk!");
+        d3.selectAll('circle.ourPlanets').select(d.name).style('fill', 'white');
+      }
+    })
+    .on("mouseout", function(d) {
+      d3.select('#'+d.name).style("fill", function(d) { return cFill(d); });
+      if(d.name === 'pluto'){
+        d3.select(this).text(d.name);
+        d3.selectAll('circle.ourPlanets').select(d.name).style('fill', cFill(d));
+      }
+    });
  
 d3.json("exoplanets_oct2012.json", function(json) {
   var node = vis.selectAll("g.node")
@@ -298,28 +302,21 @@ d3.json("exoplanets_oct2012.json", function(json) {
       .attr("transform", function(d) { return "translate(" + d.x + "," + (80 + d.y) + ")"; });
 
   node.append("title")
-      .text(function(d) { return d.className + "\n * Earth Radius: " + d.radius + "\n AU (distance to star): " + d.distance; });
+    .text(function(d) { return d.className + "\n * Earth Radius: " + d.radius + "\n AU (distance to star): " + d.distance; });
 
   node.append("circle")
-      .attr("r", function(d) { return Math.sqrt(d.r * d.r * .8); })
-      .style("fill", function(d) { return cFill(d); })
-      .on("mouseover", function(d) {
-        d3.select("#planet").text(d.className);
-        d3.select("#earths").text("("+format(d)+" * earth radius)");
-        d3.select("#year").text("year discovered: "+d.year);
-        d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
-        d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
-      })
-      .on("mouseout", function(d) {
-        d3.select(this).style("fill", function(d) { return cFill(d); });
-      });
-
-      // names on circles
-//  node.append("text")
-//      .attr("text-anchor", "middle")
-//      .attr("dy", ".3em")
-//      .text(function(d) { return d.className; });
-//      .text(function(d) { return d.className.substring(0, d.r / 3); });
+    .attr("r", function(d) { return Math.sqrt(d.r * d.r * .8); })
+    .style("fill", function(d) { return cFill(d); })
+    .on("mouseover", function(d) {
+      d3.select("#planet").text(d.className);
+      d3.select("#earths").text("("+format(d)+" * earth radius)");
+      d3.select("#year").text("year discovered: "+d.year);
+      d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
+      d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
+    })
+    .on("mouseout", function(d) {
+      d3.select(this).style("fill", function(d) { return cFill(d); });
+    });
 });
 
 // Returns a flattened hierarchy containing all leaf nodes under the root.
@@ -329,7 +326,6 @@ function classes(root) {
   function recurse(name, node) {
     if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
     else classes.push({packageName: name, className: node.P_Name, radius: node.P_Radius_EU, distance: node.P_Mean_Distance_AU, year: node.P_Disc_Year, atmosphere: node.P_Atmosphere_Class});
-
   }
 
   recurse(null, root);
@@ -337,29 +333,23 @@ function classes(root) {
 }
 
 function colorBlind(){
-  // switch to red
-//  $('#distanceButton').click();
-
   var circs = vis.selectAll("g.node").selectAll('circle');
   circs.transition()
     .duration(1000)
     .style("fill-opacity", ".7");
 
-  // cb text
   vis.transition()
-    .duration(1000)
-    .select("text#colorBlind")
-    .attr("fill", "#a9a9a9")
-    .style("fill-opacity", ".7");
+   .duration(1000)
+   .select("text#colorBlind")
+   .attr("fill", "#a9a9a9")
+   .style("fill-opacity", ".7");
 }
 </script>
 
 <script>
-  (function (){
-  
+(function (){
   "use strict";
-  
-  // test that it loads locally with ender.js and globally with vanilla konami.js
+
   var konami = new Konami();
   
   konami.code = function() {
@@ -371,7 +361,7 @@ function colorBlind(){
   };
   
   konami.load()
-  }());
-  
-  console.log('(after you\'re done, try the konami code: up, up, down, down, left, right, left, right, b, a, enter - refresh to start over)');
+}());
+
+console.log('(after you\'re done, try the konami code: up, up, down, down, left, right, left, right, b, a, enter - refresh to start over)');
 </script>
