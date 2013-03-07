@@ -3,6 +3,32 @@
 <title>codementum.org - Exoplanets</title>
 
 <style>
+  @import url(http://fonts.googleapis.com/css?family=Lora);
+  @import url(http://fonts.googleapis.com/css?family=Ubuntu);
+
+  h1, h2 {
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, footer {
+    font-family: "Ubuntu", sans-serif;
+    color: #000;
+  }
+
+  svg {
+    font: 10px sans-serif;
+  }
+
+  body {
+    color: #333;
+    margin: 1em auto 4em auto;
+    width: 960px;
+    font-family: "Lora", serif;
+  }
+
+  body > p {
+    width: 720px;
+  }
 </style>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -365,3 +391,7 @@ function colorBlind(){
 
 console.log('(after you\'re done, try the konami code: up, up, down, down, left, right, left, right, b, a, enter - refresh to start over)');
 </script>
+
+<footer>
+  <a href="../" rel="author">Lane Harrison</a>
+</footer>
