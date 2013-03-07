@@ -293,7 +293,7 @@ vis.selectAll('text.ourPlanets')
       }
     });
  
-d3.json("exoplanets_oct2012.json", function(json) {
+d3.json("exoplanets.json", function(json) {
   var node = vis.selectAll("g.node")
       .data(bubble.nodes(classes(json))
       .filter(function(d) { return !d.children; }))
