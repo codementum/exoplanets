@@ -10,7 +10,7 @@
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, footer {
+  h1, h2, footer, #planet {
     font-family: "Oswald", serif;
     color: #000;
   }
@@ -136,8 +136,7 @@ vis.append("text")
   .attr("id", "planet")
   .attr("x", 15)
   .attr("y", 80)
-  .style("font-size", "24px")
-  .style("font-weight", "bold")
+  .style("font-size", "32px")
   .style("text-anchor", "left")
   .text("Planet Name");
 
@@ -146,8 +145,6 @@ vis.append("text")
   .attr("id", "earths")
   .attr("x", 15)
   .attr("y", 110)
-  .style("font-size", "18px")
-  .style("font-weight", "bold")
   .style("text-anchor", "left")
   .text("(earth radius)");
 
@@ -156,8 +153,6 @@ vis.append("text")
   .attr("id", "year")
   .attr("x", 15)
   .attr("y", 170)
-  .style("font-size", "18px")
-  .style("font-weight", "bold")
   .style("text-anchor", "left")
   .text("year discovered");
   
@@ -166,8 +161,6 @@ vis.append("text")
   .attr("id", "atmosphere")
   .attr("x", 15)
   .attr("y", 140)
-  .style("font-size", "18px")
-  .style("font-weight", "bold")
   .style("text-anchor", "left")
   .text("atmosphere type");
 
@@ -216,12 +209,14 @@ vis.append("rect")
 
 vis.append("text")
   .attr("id", "distanceButtonText")
+  .style("font-size", "12px")
   .attr("x", r/2+15-50)
   .attr("y", 19)
   .text("color by radius");
 
 vis.append("text")
   .attr("id", "distanceButtonText")
+  .style("font-size", "12px")
   .attr("x", r/2+15-50)
   .attr("y", 39)
   .text("color by distance to nearest star");
@@ -295,9 +290,9 @@ vis.selectAll('text.ourPlanets')
   .data(ourPlanets)
   .enter().append('text')
     .attr('class', 'ourPlanets')
+    .style("font-size", "12px")
     .attr('x', function(d, i) { return r - 50; })
     .attr('y', function(d, i) { return 80 + 26*i; })
-    .style("font-size", "12px")
     .text(function(d) { return d.name; })
     .on("mouseover", function(d) {
       d3.select("#planet").text(d.name);
