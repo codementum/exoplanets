@@ -102,7 +102,7 @@ function cFill(d){
 
   var val = d.radius;
   if(val >= 0.0 && val < 4.02)
-    return d3.hsl('#156b87');
+    return d3.hsl('#156B87');
   if(val >= 4.02 && val < 11.210)
     return d3.hsl('#876315'); 
   if(val >= 11.210 && val < 16.0)
@@ -172,12 +172,12 @@ var colorByDistance = false;
 function toggleMetric() { 
   if(!colorByDistance) {
     colorByDistance = true;
-    d3.select('#distanceButton').style('fill', cFill(0.5));
+    d3.select('#distanceButton').style('fill', '#156B87');
     d3.select('#massButton').style('fill', 'white');
     updateNodes();
   } else {
     colorByDistance = false;
-    d3.select('#massButton').style('fill', cFill(0.5));
+    d3.select('#massButton').style('fill', '#156B87');
     d3.select('#distanceButton').style('fill', 'white');
     updateNodes();
   }
@@ -194,7 +194,7 @@ vis.append("rect")
   .attr("width", 10)
   .attr("height", 10)
   .style("stroke", 'black')
-  .style("fill", cFill(0.5))
+  .style("fill", "#156B87")
   .on("click", toggleMetric);
 
 vis.append("rect")
