@@ -318,7 +318,7 @@ d3.json("exoplanets.json", function(json) {
     .style("fill", function(d) { return cFill(d); })
     .on("mouseover", function(d) {
       d3.select("#planet").text(d.className);
-      d3.select("#earths").text("("+format(d)+" * earth radius)");
+      d3.select("#earths").text("("+format(d.radius)+" * earth radius)");
       d3.select("#year").text("year discovered: "+d.year);
       d3.select("#atmosphere").text("atmosphere type: "+d.atmosphere);
       d3.select(this).style("fill", function(d) { return cFill(d).brighter(); });
